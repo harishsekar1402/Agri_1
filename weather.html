@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="weather.css">
+    <title>Weather</title>
+
+</head>
+<body onload="DefaultScreen()">
+        <div class="center" style="display:flex;flex-direction:column;align-items: center;">
+           <div class="para01"> <a href="index.html"><h1>Home</h1></a> </div>
+        <h1 id="Para1">5 Days Weather Forecast</h1>
+        <!-- <p >City: <input type="text" ></p> -->
+
+        <div class="form-group" id="inputContainer">
+            <span>City: </span>
+            <input class="form-field"id="cityInput" type="text" >
+        </div>
+        <!-- <button type="button"  style="width: fit-content;">Click Me</button> -->
+        
+        <button type="button" class="button" onclick="GetInfo()">
+            <span class="button__text">Get Info</span>
+            <span class="button__icon">
+                <ion-icon name="cloud-download-outline"></ion-icon>
+            </span>
+        </button>
+       </div>
+    
+    
+    <div id = "weatherContainer">
+        <div id="iconsContainer">    
+            <div class = "icons glass" >
+                <p class="weather" id="day1"></p>
+                <div class="image"><img src="dots.png" class="imgClass" id="img1"></div>
+                <p class="minValues" id="day1Min">Loading...</p>
+                <p class="maxValues" id="day1Max">Loading...</p>
+            </div>
+            <div class = "icons glass">
+                <p class="weather" id="day2"></p>
+                <div class="image"><img src="dots.png" class="imgClass" id="img2"></div>
+                <p class="minValues" id="day2Min">Loading...</p>
+                <p class="maxValues" id="day2Max">Loading...</p>
+            </div>
+            <div class = "icons glass">
+                <p class="weather" id="day3"></p>
+                <div class="image"><img src="dots.png" class="imgClass" id="img3"></div>
+                <p class="minValues" id="day3Min">Loading...</p>
+                <p class="maxValues" id="day3Max">Loading...</p>
+            </div>
+            <div class = "icons glass">
+                <p class="weather" id="day4"></p>
+                <div class="image"><img src="dots.png" class="imgClass" id="img4"></div>
+                <p class="minValues" id="day4Min">Loading...</p>
+                <p class="maxValues" id="day4Max">Loading...</p>
+            </div>
+            <div class = "icons glass">
+                <p class="weather" id="day5"></p>
+                <div class="image"><img src="dots.png" class="imgClass" id="img5"></div>
+                <p class="minValues" id="day5Min">Loading...</p>
+                <p class="maxValues" id="day5Max">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+
+        
+<script>
+    function GetInfo() {
+
+var newName = document.getElementById("cityInput");
+var cityName = document.getElementById("cityName");
+
+
+fetch('https://api.openweathermap.org/data/2.5/forecast?q='+newName.value+'&appid=32ba0bfed592484379e51106cef3f204')
+.then(response => response.json())
+.then(data => {
+
+//Getting the min and max values for each day
+for(i = 0; i<5; i++){
+    document.getElementById("day" + (i+1) + "Min").innerHTML = "Min: " + Number(data.list[i].main.temp_min - 273.15).toFixed(1)+ "°";
+    //Number(1.3450001).toFixed(2); // 1.35
+}
+
+for(i = 0; i<5; i++){
+    document.getElementById("day" + (i+1) + "Max").innerHTML = "Max: " + Number(data.list[i].main.temp_max - 273.15).toFixed(2) + "°";
+}
+//------------------------------------------------------------
+
+//Getting Weather Icons
+ for(i = 0; i<5; i++){
+    document.getElementById("img" + (i+1)).src = "http://openweathermap.org/img/wn/"+
+    data.list[i].weather[0].icon
+    +".png";
+}
+//------------------------------------------------------------
+console.log(data)
+
+
+})
+
+.catch(err => alert("Enter The  Correct City Name"))
+}
+
+function DefaultScreen(){
+document.getElementById("cityInput").defaultValue = "Chennai";
+GetInfo();
+}
+
+
+//Getting and displaying the text for the upcoming five days of the week
+var d = new Date();
+var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+//Function to get the correct integer for the index of the days array
+function CheckDay(day){
+if(day + d.getDay() > 6){
+    return day + d.getDay() - 7;
+}
+else{
+    return day + d.getDay();
+}
+}
+
+for(i = 0; i<5; i++){
+    document.getElementById("day" + (i+1)).innerHTML = weekday[CheckDay(i)];
+}
+</script>
+<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+</body>
+<script src="trans.js"></script>
+<script src="https://unpkg.com/ionicons@5.4.0/dist/ionicons.js"></script>
+</html>
